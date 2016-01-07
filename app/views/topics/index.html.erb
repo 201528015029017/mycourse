@@ -1,0 +1,108 @@
+<script>
+
+  $(document).ready(function(){
+       // 添加点赞事件
+    $(".clickzan").click(function(){
+        topicid = $(this).attr('data-id');
+        $.ajax({
+        type : "post",
+        url : "/clickzan",
+        data: {topicid : topicid},
+        success: function(data){        //data返回是否成功与当前topic的count
+          if (data.success == false){
+            $("#alert-have-not-login").model('show');
+          }
+          else{
+            $(this).attr('disabled',"disabled");
+            $(this).val("已点赞");
+            $('#count-'+topicid).html("共"+data.count+"人点赞");
+          }
+        }
+        });
+      });
+      $("#create_topic_submit").click(function(){
+          var content = $("#topic_content").val();
+          $.ajax({
+        type : "post",
+        url : "/topics",
+        data: {topic_content : content},
+        success: function(data){
+            alert(data);
+          if (data == 0){
+            $("#common_alert_modal_html").html("亲，请先登录再提建议~");
+            $("#common_alert_modal").modal('show');
+          }
+          else{
+            $("#common_alert_modal_html").html("添加建议成功！");
+            $("#common_alert_modal").modal('show');
+            window.location.reload();
+          }
+        }
+        });
+          
+      })
+  })
+</script>
+
+<div id="suggestion" class="panel panel-info">
+  
+
+<!-- Button trigger modal -->
+
+
+<!-- Modal -->
+<div class="modal fade" id="suggestModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <form action='/topics' method='post'>
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">我要提意见</h4>
+      </div>
+      <div class="modal-body">
+        <textarea type="text" class="form-control" id = "topic_content" name = "topic_content" style="resize: none"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        <button id="create_topic_submit" type="button" class="btn btn-primary" data-dismiss="modal">提交</button>
+      </div>
+    </div>
+  </div>
+</div>
+  
+  <div class="panel-heading">
+    <div class="row">
+      <div class="col-md-9"><h3>大家可以在此提出宝贵的意见！</h3></div>
+      <div class="col-md-3"><button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#suggestModal">
+      我要提意见
+      </button>
+      </div>
+      
+    </div>
+      
+  </div>
+  <div id="topic-list" class="panel-body">
+    <!-- item -->
+
+    <% @topics_list.each do |item|%>
+    <div class="panel panel-info topic_item">
+     <div class="panel-heading">
+      <div class="row">
+         <div class="col-md-2 col-lg-2">建议人：<%= item.username %></div>
+         <div class="col-md-7 col-lg-7">提出时间：<%= item.createtime.strftime("%Y-%m-%d") %></div>
+       </div>
+       </div>
+       <div class="panel-body"><%= item.content%></div>
+       <div class="panel-body">
+           <div class="row">
+             <div class="col-md-1 col-lg-1 col-md-offset-9">
+               <button type="button" data-id="<%= item.id%>" class="btn btn-info btn-xs clickzan">我要点赞</button>
+             </div>
+             <div class="col-md-2 col-lg-2" id="count-<%= item.id%>">共<%= item.count%>人点赞</div>
+           </div>
+        </div>
+     </div>
+     <% end %>
+    <!-- item -->
+  </div>
+</div>

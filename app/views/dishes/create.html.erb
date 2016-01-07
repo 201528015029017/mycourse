@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="zh">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<!--[if IE]>
+		<script src="http://libs.useso.com/js/html5shiv/3.7/html5shiv.min.js"></script>
+	<![endif]-->
+	<script>
+		$(document).ready(function(){
+			$(".itemli").css("cursor:default");
+			$("#add_dish_err").hide();
+			var reg = /^(\d*\.)?\d+$/; 
+			$("#submit_button").click(function(){
+				if($("#dish_anme_input").val()==""){
+					$("#add_dish_err").html("菜品名字不能为空！").show();
+					return false;
+				}else if( $("#dish_anme_textarea").val()=="" ){
+					$("#add_dish_err").html("菜品简介不能为空！").show();
+					return false;
+				}else if($("#add_dish_price").val()=="" || !reg.test($("#add_dish_price").val())){
+					$("#add_dish_err").html("输入的价格格式不正确！").show();
+					return false;
+				}else if($("#product_image_url").val()==""){
+					$("#add_dish_err").html("菜品图片不能为空！").show();
+					return false;
+				}else{
+					$("#add_dish_err").hide();
+					alert("提交成功！")
+					$("#add_dish").submit();
+				}
+			});
+			
+		});
+		
+	</script>
+</head>
+<body>	
+<%= form_for :product,  url: 'upload', :html=>{:id=>"add_dish"} do |f|%>
+	<div id = 'add_dish_err' class="alert alert-danger" role="alert"></div>
+	<div class="htmleaf-container">
+		<!--<div class="htmleaf-content bgcolor-8">
+			
+		</div>-->
+		<div class="input-group">
+  			<span class="input-group-addon" id="dish_anme_label">菜品名称：</span>
+  			<input type="text" class="form-control"  aria-describedby="sizing-addon2" id = "dish_anme_input" name="dish_anme_input"></input>
+		</div>
+		<hr />
+		<p>
+			<div class="row">
+    <div class="typediv col-lg-2"><input name="create_shaixuan[]" type="checkbox" value="rihanliaoli" /> <img  class="icon-size" src = "/images/rihanliaoli.png"/>日韩料理</div>
+    <div class="typediv col-lg-2"><input name="create_shaixuan[]" type="checkbox"  value="difangcai" /> <img class="icon-size" src = "/images/difangcai.png"/>地方菜</div>
+    <div  class="typediv col-lg-2"><input name="create_shaixuan[]" type="checkbox"  value="tesexiaochi"/> <img class="icon-size" src = "/images/tesexiaochi.png"/>特色小吃</div>
+    <div  class="typediv col-lg-2"><input name="create_shaixuan[]" type="checkbox"  value="yinliao" /> <img  class="icon-size" src = "/images/yinliao.png"/>饮料</div>
+    <div  class="typediv col-lg-2"><input name="create_shaixuan[]" type="checkbox"  value="xiaoye" /> <img  class="icon-size" src = "/images/xiaoye.png"/>宵夜</div>
+    <div  class="typediv col-lg-2"><input name="create_shaixuan[]" type="checkbox"  value="huoguo" /> <img  class="icon-size" src = "/images/huoguo.png"/>火锅</div>
+    <div  class="typediv col-lg-2"><input name="create_shaixuan[]" type="checkbox"   value="xishikuaican"/> <img class="icon-size" src = "/images/xishikuaican.png"/>西式快餐</div>
+ 
+  </div>
+	
+</p>
+<hr />
+<p>
+	<div class="input-group" >
+  			<span class="input-group-addon" id="dish_anme_profile">菜品简介：</span>
+  			<textarea type="text" class="form-control"  aria-describedby="sizing-addon2" id = "dish_anme_textarea" name = "dish_anme_textarea" style="height : 100px ; resize: none"></textarea>
+	</div>
+	</p>
+	<div class="row">
+		<div class="col-md-4 ">
+			<label clas = "label">菜品位置:</label>
+			<select class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" name = "add_dish_dining"> 
+      			 <option>一食堂</option> 
+     			 <option>二食堂</option> 
+     			 <option>三食堂</option> 
+     		 </select>
+     		 <select class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" name = "add_dish_floor"> 
+      			 <option>一层</option> 
+     			 <option>二层</option> 
+     			 <option>三层</option> 
+     		 </select>
+		</div>
+		<div class="col-md-3">
+			<div class="input-group">
+  				<span class="input-group-addon" id="basic-addon1">价格</span>
+  				<input type="text" class="form-control" placeholder="请输入价格" aria-describedby="basic-addon1" name="add_dish_price" id="add_dish_price"></input>
+			</div>
+		</div>
+		<div class="col-md-4 col-md-offset-1">
+			<%= f.file_field :image_url ,:class => "filestyle" ,:"data-buttonName" => "btn-primary",:"data-buttonText" => "上传图片" %>
+		</div>
+	</div>
+	</div>
+	<hr />
+	<div style="text-align:right">
+		<button type="button" class="btn btn-primary btn-lg" id="cacen_button" style="margin:10px">取消</button>
+		<button type="button" class="btn btn-primary btn-lg" id = "submit_button" style="margin:10px">上传</button>
+	</div>
+	
+<% end %>
+</body>
+</html>

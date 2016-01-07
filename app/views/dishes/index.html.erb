@@ -1,0 +1,193 @@
+
+<head>
+  <script>
+    var dishes;
+    function getDishes(num) {
+      //var data = [{'id':1,'dishname':'黄焖鸡米饭','count':4,'score':10,'price':12.5,'dining':2,'floor':1,'picurl':'/images/dishtest.jpg'},
+      //{'id':1,'dishname':'黄焖鸡米饭黄焖鸡米饭','count':4,'score':16,'price':12.5,'dining':2,'floor':1,'picurl':'/images/dishtest.jpg'}];
+      $.ajax({
+        type : "GET",
+        url : "/getDishes",
+        data: {dining : num},
+        success: function(data){
+         // alert(data[0].id)
+         //alert(data.length)
+         
+         dishes = data;
+         dishes.sort(bijiao);
+         $('#index_dish-list').html('');
+         
+         showDishes(data);
+        }
+        });
+    }
+    function bijiao(a,b){
+      if(a.count == 0)
+       return 1;
+      if(b.count == 0)
+       return -1;
+      return a.score/a.count < b.score/b.count ? 1 : -1;
+       
+    }
+    
+    function showDishes(data){
+      var id,name,count,score,price,address,img_url,ave_score;
+      var len = data.length;
+      //alert(data.length);
+      for (var i = 0; i < len; i++){
+        var item = data[i];
+        id = item.id;
+        name = item.dishname;
+        count = item.count;
+        score = item.score;
+        if (count > 0)
+          ave_score = score/count;
+        else ave_score = 0;
+        price = item.price;
+        address = item.dining+ "食堂-" + item.floor + "楼";
+        img_url = "images/upload_dish_images/" + item.picurl;
+
+      ///////////
+        var s_img,s_name,s_star,s_address,s_content,s;
+        s_img = "<a href='/dishdetails/"+ id +"'><img src='"+img_url+"' style='width:150px;height:150px'></a>";
+        s_name = "<h4>"+name+"</h4>"
+        s_star = "<input class='disabled_rating dishes-all-star' type='number' value="+ave_score+"></input>"+
+            "<p><small>共"+count+"人评价</small></p>";
+        s_address = "<div>"+address+"</div>";
+        s_content = "<div class='caption'>"+s_name+s_star+s_address+"</div>";
+        s="<div class='col-sm-6 col-md-2'><div class='thumbnail'>"+s_img+s_content+"</div></div>";
+        $('#index_dish-list').append(s);
+        $('.dishes-all-star').rating({  //整体评价
+              min: 0,
+              max: 5,
+              step: 0.1,
+              showClear: false,
+              showCaption:false,
+              readonly: true,
+              size : "xm"
+      });
+      }
+    }
+    
+    function getDateDay(str){
+      var datetime = "";
+      var i = 0;
+      while(i < str.length && str[i] != 'T') {datetime+=str[i];i++;};
+      //alert(datetime)
+      return datetime;
+    }
+    
+    function getDiffDays(s1,s2)
+    {
+      var days = s2.getTime() - s1.getTime();
+      var time = parseInt(days / (1000 * 60 * 60 * 24));
+      return Math.abs(time);
+    }
+    
+    function selectDishesBytag(tag){
+      var dishesByTag = new Array();
+      var k=0;
+      var istag;
+      var datetime;
+      if(tag == "quanbu")
+        return dishes;
+      //alert(getDateDay(dishes[0].createtime))
+      if(tag == "xinpin"){
+        var nowtime = new Date();
+        for(var i=0;i<dishes.length;i++){
+          var dishtime1 = dishes[i].createtime;
+          datetime = getDateDay(dishtime1);
+          var date = datetime.split('-');
+          var datee = new Date(date[0],date[1]-1,date[2]);
+          //alert(nowtime + "  "+ datetime+ "  "+ getDiffDays(nowtime , datee));
+          if(getDiffDays(nowtime , datee) < 7){
+            dishesByTag[k++] = dishes[i];
+          }
+          //alert(dishtime);
+        }
+        return dishesByTag;
+      }
+      for(var i=0;i<dishes.length;i++){
+        var tags = dishes[i].tags.split("#");
+        //alert(tags);
+        istag=0;
+        for(var j=0;j<tags.length;j++){
+          if(tags[j]==tag){
+            //alert(tags[j]+"  "+tag)
+            istag=1;
+            break;
+          }
+        }
+        if(istag==1)
+        {
+          dishesByTag[k++] = dishes[i];
+        }
+      }
+      return dishesByTag;
+    }
+    
+    $(document).ready(function(){
+      
+      $(".dining-tabs").click(function(){
+        var id = $(this).attr("data-text");
+        
+        var data = getDishes(id);
+        //alert(id);
+      })
+      $("div .typediv").mouseover(function(){
+        $(this).css("color","red");
+      })
+       $("div .typediv").mouseout(function(){
+        $(this).css("color","black");
+      })
+      $("li.active a").click();
+      
+      $("div .typediv").click(function() {
+          var id = $(this).attr("data-id");
+          var select_dishes;
+          //alert(id);
+
+          select_dishes = selectDishesBytag(id);
+          $('#index_dish-list').html('');
+          showDishes(select_dishes);
+      })
+    })
+
+  </script>
+</head>
+
+
+<body>
+
+<div>
+
+  <!-- Nav tabs -->
+  <ul class="nav nav-pills page-header" role="tablist">
+    <li class="active"><a class='dining-tabs' data-text='0' href="javascript:void(0)" role="tab" data-toggle="tab">全部</a></li>
+    <li><a class='dining-tabs dining_button' data-text='1' href="javascript:void(0)" role="tab" data-toggle="tab">一食堂</a></li>
+    <li><a class='dining-tabs dining_button' data-text='2' href="javascript:void(0)" role="tab" data-toggle="tab">二食堂</a></li>
+    <li><a class='dining-tabs dining_button' data-text='3' href="javascript:void(0)" role="tab" data-toggle="tab">三食堂</a></li>
+  </ul>
+  <div class="container-fluid dish-type">
+  <div class="row">
+    <div class="typediv col-lg-2" data-id="quanbu"><img class="icon-size" src = "/images/quanbu.png"/> 全部</div>
+    <div class="typediv col-lg-2" data-id="xinpin"><img class="icon-size" src = "/images/xinpin.png"/> 新品</div>
+    <div class="typediv col-lg-2" data-id="rihanliaoli"><img class="icon-size" src = "/images/rihanliaoli.png"/> 日韩料理</div>
+    <div class="typediv col-lg-2" data-id="difangcai"><img class="icon-size" src = "/images/difangcai.png"/> 地方菜</div>
+    <div class="typediv col-lg-2" data-id="tesexiaochi"><img class="icon-size" src = "/images/tesexiaochi.png"/> 特色小吃</div>
+    <div class="typediv col-lg-2" data-id="yinliao"><img class="icon-size" src = "/images/yinliao.png"/> 饮料</div>
+    <div class="typediv col-lg-2" data-id="xiaoye"><img class="icon-size" src = "/images/xiaoye.png"/> 宵夜</div>
+    <div class="typediv col-lg-2" data-id="huoguo"><img class="icon-size" src = "/images/huoguo.png"/> 火锅</div>
+    <div class="typediv col-lg-2" data-id="xishikuaican"><img class="icon-size" src = "/images/xishikuaican.png"/> 西式快餐</div>
+
+  </div>
+  </div>
+  <div class="dish-content">
+    <div id = "index_dish-list" class="row">
+      <!-- unit -->
+     </div>
+    
+  </div>
+
+</div>
+</body>

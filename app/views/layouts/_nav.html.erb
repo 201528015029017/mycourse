@@ -1,0 +1,116 @@
+<script>
+  $(document).ready(function(){
+    
+    $("#nav_createdish").click(function() {
+      var from=$("<form></form>");
+         from.attr('action',"/create");
+        from.attr('method','get');
+        from.css('display','none')
+        from.submit();
+    });
+    $("#nav_index").click(function() {
+      var from=$("<form></form>");
+         from.attr('action',"/dishes");
+        from.attr('method','get');
+        from.css('display','none')
+        from.submit();
+    });
+    
+      $.ajax({  
+	    type: 'GET',   
+	    url: "/getUser",  
+	     data: {},
+	     datatype: "json",
+	     success: function(data){         //返回值结果是判断  
+        if(data!=null){
+		       $("#nav_greeting").show();
+		       $("#nav_nickname").show();	
+		       $("#nav_login").hide();
+		        $("#nav_register").hide();
+		       $('#nav_nickname').html(data['username']+"<span class='caret'></span>")
+		       //alert(data['isadmin']);
+		       $("#nav_createdish").hide();
+		       if(data['isadmin'] == true){
+		         //alert(data['isadmin']);
+		          $("#nav_createdish").show();	
+		       }
+        }else{ 
+		       $("#nav_login").show();
+		        $("#nav_register").show();
+		        $("#nav_greeting").hide();
+		       $("#nav_nickname").hide();	
+		       $("#nav_createdish").hide();
+                    //alert('null');
+          } 
+        }
+      })
+      $("#nav_logout").click(function(){
+	$.ajax({  
+	    type: 'GET',   
+	    url: "/logout",   
+	     data: {},
+	     success: function(data){         //返回值结果是判断  
+                if(data!=null){ 
+		      alert("成功登出！")
+		      window.location.reload();	
+                }else{ 
+		  alert("登出出错")
+                } 
+             }
+       })
+      });
+      
+      $("#search_dishes").click(function() {
+        var search_text = $("#search_text").val();
+        //alert(search_text);
+         $.ajax({
+           type:"GET",
+           url:"/selectDishes",
+           data: {dining: "0",search : search_text},
+           success: function(data){
+           }
+         })
+      });
+      
+  })
+</script>
+
+<nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a id = "nav_index" class="navbar-brand" href="#">首页</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <form class="navbar-form navbar-left" role="search">
+        <div class="form-group">
+          <input id = "search_text" type="text" class="form-control" placeholder="Search">
+        </div>
+        <button id = "search_dishes" type="button" class="btn btn-default">搜索</button>
+      </form>
+      <ul class="nav navbar-nav navbar-right">
+        
+        <li><a id = "nav_createdish" href="#">创建菜品</a></li>
+       <li><a id = "nav_login" href="javascript:void(0)">登录</a></li>
+        <li><a id = "nav_register" href="javascript:void(0)">注册</a></li>
+        <li><p id = "nav_greeting" class="navbar-text">你好 </p><li>
+        <li class="dropdown">
+          <a  id="nav_nickname" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> </a>
+          <ul class="dropdown-menu">
+            <li><a id = "nav_logout" href="javascript:void(0)">登出</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+
+  <%=render :partial=>"layouts/nav2"%>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>舌尖上的果壳大</title>
+  <%= stylesheet_link_tag  'application', media: 'all', 'data-turbolinks-track' => true %>
+  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+  <%= csrf_meta_tags %>
+</head>
+
+<body>
+  <%=render :partial=>"layouts/nav"%>
+  <div class = 'my_main'>
+  <%= yield%>
+  </div>
+  
+  <!-- 请先登录再评论 -->
+<div class="modal fade" id="common_alert_modal" tabindex="-1" role="dialog" aria-labelledby="alert_login">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div id= "common_alert_modal_html" class="modal-body">
+        请先登录再执行！
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">关闭</button>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

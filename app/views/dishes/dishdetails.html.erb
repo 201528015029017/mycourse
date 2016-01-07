@@ -1,0 +1,169 @@
+<head>
+    <script>
+    $(document).ready(function(){
+       //$("#comment_textarea").val("ddddd"); 
+        
+        $("#add_comment_button").click(function(){
+            $("#comment_Modal").modal("show");
+            $("#comment_err").hide();
+        });
+        
+        $("#comment_submit_button").click(function(){
+            comment_textarea = $("#comment_textarea").val(); 
+            if(comment_textarea==""){
+                $("#comment_err").html("亲，评论不能为空哦~").show();
+            }else{
+                $.ajax({
+                    type: "POST",
+                    url: "/addComment",
+                    data : {dishid:$("#dishid").val(),rating:$("#add_rating").val(),comment:$("#comment_textarea").val()},
+                    success: function(data){
+                        if(data == 0){
+                            $("#common_alert_modal_html").html("亲，请先登录再评论哦~");
+                            $("#common_alert_modal").modal('show');
+                        }else if(data == 1)
+                        {
+                            $("#common_alert_modal_html").html("对不起，添加评论失败...");
+                            $("#common_alert_modal").modal('show');
+                            
+                        }else
+                        {
+                            $("#common_alert_modal_html").html("评论成功");
+                            $("#common_alert_modal").modal('show');
+                            window.location.reload();
+                        }
+                    }
+                });
+                
+            }
+            //ajax传值
+            //window.location.reload();
+        });
+        
+        $('.disabled_rating').rating({
+              min: 0,
+              max: 5,
+              step: 1,
+              showClear: false,
+              showCaption:false,
+              disabled:true,
+              size : "xm"
+           });
+    $('#disabled_rating1').rating({  //整体评价
+              min: 0,
+              max: 5,
+              step: 0.1,
+              showClear: false,
+              disabled:true,
+              size : "xm"
+           });
+    $('.add_comment_rating').rating({
+              min: 0,
+              max: 5,
+              step: 1,
+              showClear: false,
+              size : "sm"
+           });
+    });
+    </script>
+</head>
+<div  class="row">
+    <div class="col-md-12">
+        <span class="input-group-addon" id="dish_anme_label">菜品信息：</span>
+    </div>
+</div>
+<div class="media">
+    <div  class = "media-left"  style="float:left;">
+       <img class = "disp_dish_image" src = "/images/upload_dish_images/<%= @singleDish.picurl %>">
+    </div>
+    <div class = "media-body" style="margin-left:10%;width:700px;float:left">
+        <label clas = "label">菜品名称:</label>
+        <span><%= @singleDish.dishname %></span>
+        <hr>
+        <label clas = "label">菜品简介:</label>
+        <br>
+        <span><%= @singleDish.describtion %></span>
+        <hr>
+        <label clas = "label">菜品标签:</label>
+        <div id="dish_tags">
+            <% @singledishtags = @singleDish.tags.split('#') %>
+            <% @singledishtags.each do |tag| %>
+            <li class="itemli item2" nstat="readyed|{da_src:cateBk.0}" data-name="全部" data-id="1"  >
+              <img src = "/images/<%= tag %>.png"/>
+              <%= DishesController.dishtagsname[:"#{tag}"] %>
+            </li>
+            <% end %>
+        </div>
+    </div>
+</div>
+<br>
+<div  class="row">
+    <div class="col-md-12">
+        <span class="input-group-addon" id="dish_pinglun_label">菜品评价：</span>
+    </div>
+</div>
+<div>
+    <div  class="row">
+        <div class="col-md-4">
+             <label clas = "label" style="float:left">整体评价: </label>
+            <div style="text-align:left;width:200px;float:left;margin-left:10px">
+                <input id="disabled_rating1" value=<%= @singleDish.count==0?0:((@singleDish.score).to_f/(@singleDish.count).to_f).round(1)  %> type="number" ></input>
+            </div>
+        </div>
+        <div class="col-md-1 col-md-offset-7">
+            <button id = "add_comment_button" type="button" class="btn btn-success btn-sm">添加评论</button>
+        </div>
+    </div>
+</div>
+<div><hr></div>
+<% @dishcomment.each do |singlecomm| %>
+<div class="comment_div">
+    <div class="row">
+        <div class="col-md-2">
+            <label id ="usernames"><%= singlecomm.username %></label>
+        </div>
+        <div class="col-md-2 col-md-offset-8">
+            <label id ="createtimr"><%= singlecomm.createtime.strftime("%Y-%m-%d %H:%M:%S") %></label>
+        </div>
+    </div>
+    <div>
+         <input class="disabled_rating" value=<%= singlecomm.score %> type="number"></input>
+    </div>
+    <div>
+        <%= singlecomm.content %>
+    </div>
+    <hr>
+</div>
+<%  end %>
+
+<!-- Modal -->
+<div class="modal fade" id="comment_Modal" tabindex="-1" role="dialog" aria-labelledby="comment_Modal">
+  <div class="modal-dialog" role="document">
+
+  <form>
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" id="myModalLabel">Welcome!</h4>
+      </div>
+      <div class="modal-body"> 
+         <div id = 'comment_err' class="alert alert-danger" role="alert"></div>
+            <input id = "add_rating" class="add_comment_rating" value="3" type="number"></input>
+          <textarea id = "comment_textarea" type="text" class="form-control"  style="height : 100px ; resize: none"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        <button type="button" class="btn btn-primary" id = "comment_submit_button" data-dismiss="modal">提交</button>
+      </div>
+    </div>
+   </form>
+  </div>
+</div>
+<input id = "dishid" value = <%= @dishid %> style="display:none" />
+
+
+
+
+

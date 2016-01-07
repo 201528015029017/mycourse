@@ -1,0 +1,129 @@
+<script>
+
+    function getDateDay(str){
+      var datetime = "";
+      var i = 0;
+      while(i < str.length && str[i] != 'T') {datetime+=str[i];i++;};
+      //alert(datetime)
+      return datetime;
+    }
+  function get_topics(){
+    /*
+    $.ajax({
+        type : "get",
+        url : "/getTopics",
+        data: {dining : num},
+        success: function(data){
+          showTopics(data);
+        }
+        });
+      */
+      var data = [{'content':'我想吃黄焖鸡米饭!','username':'刘重瑞','createtime':'2016-1-15T173228','count':'100'}];
+      showTopics(data);
+  }
+  
+  function showTopics(data){
+    $("#topic-list").html('');
+    for (var i=0; i < 10; i++){
+      
+      var item = data[0];
+      content = item.content;
+      topicid = i;
+      username = item.username;
+      createtime = item.createtime;
+      count = item.count;
+      var s_content,s_username,s_createtime,s_button,s_count;
+      s_content = "<div class='panel-body'>"+content+"</div>";
+      s_username = "<div class='col-md-2 col-lg-2'>建议人："+username+"</div>";
+      s_createtime = "<div class='col-md-7 col-lg-7'>提出时间："+getDateDay(createtime)+"</div>";
+      s_button = "<div class='col-md-1 col-lg-1 col-md-offset-9'><button type='button' data-id='"+topicid+"' class='btn btn-info btn-xs clickzan'>我要点赞</button></div>";
+      s_count = "<div class='col-md-2 col-lg-2' id='count-"+topicid+"'>共"+count+"人点赞</div>";
+      var s_heading,s_body1,s_body2;
+      s_heading = "<div class='panel-heading'><div class='row'>"+s_username+s_createtime+"</div></div>";
+      s_body1 = s_content;
+      s_body2 = "<div class='panel-body'><div class='row'>"+s_button+s_count+"</div></div>";
+      var s;
+      s="<div class='panel panel-info topic_item'>"+s_heading+s_body1+s_body2+"</div>";
+      $("#topic-list").append(s);
+      // 添加点赞事件
+      $(".clickzan").click(function(){
+        topicid = $(this).attr('data-id');
+        $.ajax({
+        type : "post",
+        url : "/clickzan",
+        data: {topicid : topicid},
+        success: function(data){        //data返回是否成功与当前topic的count
+          if (data.success == false){
+            $("#alert-have-not-login").model('show');
+          }
+          else{
+            $(this).attr('disabled',"disabled");
+            $(this).val("已点赞");
+            $('#count-'+topicid).html("共"+data.count+"人点赞");
+          }
+        }
+        });
+      });
+    }
+    
+  }
+  $(document).ready(function(){
+    get_topics();
+  })
+</script>
+
+<div id="suggestion" class="panel panel-info">
+  
+<div class="modal fade" id="alert-have-not-login" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        请先登录再点赞！
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">关闭</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Button trigger modal -->
+
+
+<!-- Modal -->
+<div class="modal fade" id="suggestModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <form action='/topics' method='post'>
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">我要提意见</h4>
+      </div>
+      <div class="modal-body">
+        <textarea type="text" class="form-control" id = "topic_content" name = "topic_content" style="resize: none"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        <button type="submit" class="btn btn-primary">提交</button>
+      </div>
+    </div>
+  </div>
+</div>
+  
+  <div class="panel-heading">
+    <div class="row">
+      <div class="col-md-9"><h3>大家可以在此提出宝贵的意见！</h3></div>
+      <div class="col-md-3"><button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#suggestModal">
+      我要提意见
+      </button>
+      </div>
+      
+    </div>
+      
+  </div>
+  <div id="topic-list" class="panel-body">
+    <!-- item -->
+
+    <!-- item -->
+  </div>
+</div>
