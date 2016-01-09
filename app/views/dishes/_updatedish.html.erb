@@ -1,0 +1,61 @@
+
+<body>	
+<%= form_for :product_edit,  url: "/updatedish/#{@singleDish.id}", :html=>{:id=>"edit_dish"} do |f|%>
+	<div id = 'edit_dish_err' class="alert alert-danger" role="alert"></div>
+	<div class="htmleaf-container">
+		<!--<div class="htmleaf-content bgcolor-8">
+			
+		</div>-->
+		<div class="input-group">
+  			<span class="input-group-addon" id="edit_dish_anme_label">菜品名称：</span>
+  			<input type="text" class="form-control"  aria-describedby="sizing-addon2" id = "edit_dish_anme_input" name="edit_dish_anme_input"></input>
+		</div>
+		<hr />
+		<p>
+			<div class="row">
+    <div class="col-lg-2"><input name="edit_shaixuan[]" type="checkbox" value="rihanliaoli" /> <img  class="icon-size" src = "/images/rihanliaoli.png"/>日韩料理</div>
+    <div class="col-lg-2"><input name="edit_shaixuan[]" type="checkbox"  value="difangcai" /> <img class="icon-size" src = "/images/difangcai.png"/>地方菜</div>
+    <div  class="col-lg-2"><input name="edit_shaixuan[]" type="checkbox"  value="tesexiaochi"/> <img class="icon-size" src = "/images/tesexiaochi.png"/>特色小吃</div>
+    <div  class="col-lg-2"><input name="edit_shaixuan[]" type="checkbox"  value="yinliao" /> <img  class="icon-size" src = "/images/yinliao.png"/>饮料</div>
+    <div  class="col-lg-2"><input name="edit_shaixuan[]" type="checkbox"  value="xiaoye" /> <img  class="icon-size" src = "/images/xiaoye.png"/>宵夜</div>
+    <div  class="col-lg-2"><input name="edit_shaixuan[]" type="checkbox"  value="huoguo" /> <img  class="icon-size" src = "/images/huoguo.png"/>火锅</div>
+    <div  class="col-lg-2"><input name="edit_shaixuan[]" type="checkbox"   value="xishikuaican"/> <img class="icon-size" src = "/images/xishikuaican.png"/>西式快餐</div>
+ 
+  </div>
+	
+</p>
+<hr />
+<p>
+	<div class="input-group" >
+  			<span class="input-group-addon" id="edit_dish_anme_profile">菜品简介：</span>
+  			<textarea type="text" class="form-control"  aria-describedby="sizing-addon2" id = "edit_dish_anme_textarea" name = "edit_dish_anme_textarea" style="height : 100px ; resize: none"></textarea>
+	</div>
+	</p>
+	<div class="row">
+		<div class="col-md-4 ">
+			<label clas = "label">菜品位置:</label>
+			<select class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" name = "edit_dish_dining"> 
+      			 <option>一食堂</option> 
+     			 <option>二食堂</option> 
+     			 <option>三食堂</option> 
+     		 </select>
+     		 <select class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" name = "edit_dish_floor"> 
+      			 <option>一层</option> 
+     			 <option>二层</option> 
+     			 <option>三层</option> 
+     		 </select>
+		</div>
+		<div class="col-md-3">
+			<div class="input-group">
+  				<span class="input-group-addon" id="basic-addon1">价格</span>
+  				<input type="text" class="form-control" placeholder="请输入价格" aria-describedby="basic-addon1" name="edit_dish_price" id="edit_dish_price"></input>
+			</div>
+		</div>
+		<div class="col-md-4 col-md-offset-1">
+			<%= f.file_field :edit_image_url ,:class => "filestyle" ,:"data-buttonName" => "btn-primary",:"data-buttonText" => "上传图片" %>
+		</div>
+	</div>
+	</div>
+	
+<% end %>
+</body>

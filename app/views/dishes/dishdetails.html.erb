@@ -2,6 +2,75 @@
     <script>
     $(document).ready(function(){
        //$("#comment_textarea").val("ddddd"); 
+        $("#edit_and_delete").hide();
+        $("#edit_dish_err").hide();
+        var reg = /^(\d*\.)?\d+$/; 
+        $("#edit_dish_button").click(function(){
+            $("#update_dish_modal").modal('show');
+            //alert($("#dish_name_span").html());
+            $("#edit_dish_anme_input").val( $("#dish_name_span").html());
+            
+            $("#edit_dish_anme_textarea").val( $("#dish_profile_span").html());
+            $("#edit_dish_price").val( $("#dish_price_span").html());
+
+        });
+        
+        $("#update_dish_button").click(function(){
+            if($("#edit_dish_anme_input").val()==""){
+					$("#edit_dish_err").html("菜品名字不能为空！").show();
+					return false;
+				}else if( $("#edit_dish_anme_textarea").val()=="" ){
+					$("#edit_dish_err").html("菜品简介不能为空！").show();
+					return false;
+				}else if($("#edit_dish_price").val()=="" || !reg.test($("#edit_dish_price").val())){
+					$("#edit_dish_err").html("输入的价格格式不正确！").show();
+					return false;
+				}else{
+					$("#edit_dish_err").hide();
+					alert("提交成功！")
+					$("#edit_dish").submit();
+				//	alert("adadad");
+				}
+        });
+        
+        $("#delete_confirm_button").click(function(){
+            form = $("<form></form>");
+            form.attr('action','/deletedish/'+$("#dishid").val());
+            form.attr('method','POST');
+            form.css('display','none');
+            form.submit();
+        })
+        $("#delete_dish_button").click(function(){
+            $("#delete_confirm_Modal").modal("show");
+            
+        });
+        
+        
+        $("#update_close_modal").click(function(){
+            $("#edit_dish_err").html("").hide();
+        });
+        $("#update_cancel_modal").click(function(){
+            $("#edit_dish_err").html("").hide();
+        });
+        
+        
+        
+         $.ajax({  
+	    type: 'GET',   
+	    url: "/getUser",  
+	     data: {},
+	     datatype: "json",
+	     success: function(data){         //返回值结果是判断  
+	     //alert(data);
+        if(data != null && data['isadmin'] == true){
+		    //alert(1)
+		    $("#edit_and_delete").show();	
+        }else{ 
+            
+		    $("#edit_and_delete").hide();
+          } 
+        }
+      })
         
         $("#add_comment_button").click(function(){
             $("#comment_Modal").modal("show");
@@ -28,8 +97,6 @@
                             
                         }else
                         {
-                            $("#common_alert_modal_html").html("评论成功");
-                            $("#common_alert_modal").modal('show');
                             window.location.reload();
                         }
                     }
@@ -76,23 +143,34 @@
     <div  class = "media-left"  style="float:left;">
        <img class = "disp_dish_image" src = "/images/upload_dish_images/<%= @singleDish.picurl %>">
     </div>
-    <div class = "media-body" style="margin-left:10%;width:700px;float:left">
+    <div class = "media-body" style="margin-left:10%;width:700px;float:left;">
         <label clas = "label">菜品名称:</label>
-        <span><%= @singleDish.dishname %></span>
+        <span id = "dish_name_span"><%= @singleDish.dishname %></span>
         <hr>
         <label clas = "label">菜品简介:</label>
         <br>
-        <span><%= @singleDish.describtion %></span>
+        <span id = "dish_profile_span"><%= @singleDish.describtion %></span>
         <hr>
         <label clas = "label">菜品标签:</label>
-        <div id="dish_tags">
+        <div id="dish_tags" >
             <% @singledishtags = @singleDish.tags.split('#') %>
             <% @singledishtags.each do |tag| %>
-            <li class="itemli item2" nstat="readyed|{da_src:cateBk.0}" data-name="全部" data-id="1"  >
+            <li class="itemli item2" nstat="readyed|{da_src:cateBk.0}" data-name="全部" data-id="1">
               <img src = "/images/<%= tag %>.png"/>
-              <%= DishesController.dishtagsname[:"#{tag}"] %>
+              <span name = "tags" class = "<%= tag %>"><%= DishesController.dishtagsname[:"#{tag}"] %></span>
             </li>
             <% end %>
+        </div>
+        <br><br><hr>
+        <label clas = "label">地点:</label>
+        <%= @singleDish.dining %>食堂-<%= @singleDish.floor %>层
+        <label clas = "label" style="margin-left:50px">价格:</label>
+        <span id = "dish_price_span"><%= @singleDish.price%></span>元
+        <div id = "edit_and_delete">
+            <div class="col-md-4 btn-group row" role="group">
+              <button type="button" class="btn btn-default" id="edit_dish_button">修改</button>
+              <button type="button" class="btn btn-default" id="delete_dish_button">删除</button>
+            </div>
         </div>
     </div>
 </div>
@@ -136,7 +214,7 @@
 </div>
 <%  end %>
 
-<!-- Modal -->
+<!-- add comment Modal -->
 <div class="modal fade" id="comment_Modal" tabindex="-1" role="dialog" aria-labelledby="comment_Modal">
   <div class="modal-dialog" role="document">
 
@@ -155,13 +233,65 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-        <button type="button" class="btn btn-primary" id = "comment_submit_button" data-dismiss="modal">提交</button>
+        <button type="button" class="btn btn-primary" id = "comment_submit_button">提交</button>
       </div>
     </div>
    </form>
   </div>
 </div>
+
+
+<!-- delete confirm-->
+<div class="modal fade" id="delete_confirm_Modal" tabindex="-1" role="dialog" aria-labelledby="delete_confirm_Modal1">
+  <div class="modal-dialog" role="document">
+
+  <form>
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body"> 
+        <h4>确认要删除吗？</h4>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        <button type="button" class="btn btn-primary" id = "delete_confirm_button" data-dismiss="modal">提交</button>
+      </div>
+    </div>
+   </form>
+  </div>
+</div>
+
+<!-- update dish Modal -->
+<div class="modal fade" id="update_dish_modal" tabindex="-1" role="dialog" aria-labelledby="update_dish_modal1" >
+  <div class="modal-dialog" role="document" style="width:1000px">
+
+
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" id = "update_close_modal">
+        <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" id="update_dish_modal1">修改菜品</h4>
+      </div>
+      <div class="modal-body"> 
+
+      <%=render :partial=>"dishes/updatedish"%>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" id = "update_cancel_modal">取消</button>
+        <button type="button" class="btn btn-primary" id = "update_dish_button" data-dismiss="modal">提交</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
 <input id = "dishid" value = <%= @dishid %> style="display:none" />
+
 
 
 

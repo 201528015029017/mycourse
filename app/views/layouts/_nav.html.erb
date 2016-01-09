@@ -1,12 +1,42 @@
 <script>
   $(document).ready(function(){
+    //$("#add_dish_modal_err").hide()
+    
+			$("#add_dish_err").hide();
+			$("#edit_pwd_err").hide();
+			var reg = /^(\d*\.)?\d+$/; 
+			$("#add_dish_button").click(function(){
+				if($("#dish_anme_input").val()==""){
+					$("#add_dish_err").html("菜品名字不能为空！").show();
+					return false;
+				}else if( $("#dish_anme_textarea").val()=="" ){
+					$("#add_dish_err").html("菜品简介不能为空！").show();
+					return false;
+				}else if($("#add_dish_price").val()=="" || !reg.test($("#add_dish_price").val())){
+					$("#add_dish_err").html("输入的价格格式不正确！").show();
+					return false;
+				}else if($("#product_image_url").val()==""){
+					$("#add_dish_err").html("菜品图片不能为空！").show();
+					return false;
+				}else{
+					$("#add_dish_err").hide();
+					alert("提交成功！")
+					$("#add_dish").submit();
+					//alert("adadad");
+				}
+			});
+			
+			$("#add_cancel_modal").click(function() {
+			    $("#add_dish_err").html("").hide();
+			})
+				$("#add_close_modal").click(function() {
+			    $("#add_dish_err").html("").hide();
+			})
+
     
     $("#nav_createdish").click(function() {
-      var from=$("<form></form>");
-         from.attr('action',"/create");
-        from.attr('method','get');
-        from.css('display','none')
-        from.submit();
+      
+      $("#add_dish_modal").modal('show');
     });
     $("#nav_index").click(function() {
       var from=$("<form></form>");
@@ -51,7 +81,8 @@
 	     data: {},
 	     success: function(data){         //返回值结果是判断  
                 if(data!=null){ 
-		      alert("成功登出！")
+		      $("#common_alert_modal_html").html("成功登出！");
+          $("#common_alert_modal").modal('show');
 		      window.location.reload();	
                 }else{ 
 		  alert("登出出错")
@@ -72,11 +103,94 @@
          })
       });
       
+      $("#change_pwd").click(function() {
+          $("#edit_pwd_modal").modal("show");
+      });
+      
+      $("#edit_pwd_button").click(function() {
+        //alert(1);
+        var pwd = $("#edit_Password").val();
+        var pwdconf = $("#edit_Password_conf").val();
+        var uid = $("#userid").val(); 
+          if(pwd == "")
+          {
+            $("#edit_pwd_err").html("密码不能为空！").show();
+          }else if(pwd != pwdconf){
+            $("#edit_pwd_err").html("密码不一致！").show();
+          }else{
+            $.ajax({
+           type:"POST",
+           url:"/changePwd",
+           data: { id:uid, password: pwd},
+           success: function(data){
+             $("#edit_pwd_modal").modal("hide");
+           }
+         })
+          }
+      });
+      
   })
 </script>
 
-<nav class="navbar navbar-default navbar-fixed-top">
-  <div class="container-fluid">
+
+<!-- add dish Modal -->
+<div class="modal fade" id="add_dish_modal" tabindex="-1" role="dialog" aria-labelledby="add_dish_modal1" >
+  <div class="modal-dialog" role="document" style="width:1000px">
+
+
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="add_close_modal">
+        <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" id="add_dish_modal1">创建菜品</h4>
+      </div>
+      <div class="modal-body"> 
+
+
+      <%=render :partial=>"dishes/createdish"%>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" id="add_cancel_modal">取消</button>
+        <button type="button" class="btn btn-primary" id = "add_dish_button" data-dismiss="modal">提交</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- change password modal -->
+<div class="modal fade" id="edit_pwd_modal" tabindex="-1" role="dialog" aria-labelledby="edit_pwd_modal1">
+  <div class="modal-dialog" role="document">
+
+  <form>
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" id="edit_pwd_modal1">更改密码</h4>
+      </div>
+      <div class="modal-body"> 
+     <div id = 'edit_pwd_err' class="alert alert-danger" role="alert"></div>
+
+    <input type="password" class="form-control" id="edit_Password" placeholder="输入密码" name="edit_pwd"><br>
+    <input type="password" class="form-control" id="edit_Password_conf" placeholder="确认密码" name="edit_pwd">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        <button type="button" class="btn btn-primary" id = "edit_pwd_button">提交</button>
+      </div>
+    </div>
+   </form>
+  </div>
+</div>
+
+
+<nav class="navbar navbar-default navbar-fixed-top navbar-background-color">
+  <div class="body-padding container-fluid">
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
@@ -85,7 +199,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a id = "nav_index" class="navbar-brand" href="#">首页</a>
+      <a id = "nav_index" class="navbar-brand navbar-word-color" href="#" >首页</a>
     </div>
 
     <!-- Collect the nav links, forms, and other content for toggling -->
@@ -97,14 +211,15 @@
         <button id = "search_dishes" type="button" class="btn btn-default">搜索</button>
       </form>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li><a href="/topics">我要提建议</a></li>
         <li><a id = "nav_createdish" href="#">创建菜品</a></li>
        <li><a id = "nav_login" href="javascript:void(0)">登录</a></li>
         <li><a id = "nav_register" href="javascript:void(0)">注册</a></li>
-        <li><p id = "nav_greeting" class="navbar-text">你好 </p><li>
+        <li><p id = "nav_greeting" class="navbar-text word-color-white">你好,</p><li>
         <li class="dropdown">
           <a  id="nav_nickname" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> </a>
           <ul class="dropdown-menu">
+            <li><a id = "change_pwd" href="javascript:void(0)">更改密码</a></li>
             <li><a id = "nav_logout" href="javascript:void(0)">登出</a></li>
           </ul>
         </li>
@@ -112,5 +227,7 @@
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 </nav>
+
+<input id = "userid" value = <%= session[:user].nil? ? "" :session[:user]["id"] %> style="display:none" />
 
   <%=render :partial=>"layouts/nav2"%>

@@ -72,4 +72,8 @@ Rails.application.routes.draw do
  get 'selectDishes' => "dishes#selectDishes"
  get 'upload' => 'dishes#upload'
  post 'addComment' => 'dishes#addComment'
+ post 'clickzan' => 'topics#clickzan'
+ post 'updatedish/:id' => 'dishes#updatedish'
+ post 'deletedish/:id' => 'dishes#deletedish'
+ post 'changePwd' => 'users#changePwd'
 end

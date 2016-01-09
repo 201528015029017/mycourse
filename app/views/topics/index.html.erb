@@ -9,13 +9,15 @@
         url : "/clickzan",
         data: {topicid : topicid},
         success: function(data){        //data返回是否成功与当前topic的count
-          if (data.success == false){
-            $("#alert-have-not-login").model('show');
+          if (data == -1){
+            $("#common_alert_modal_html").html("亲，请先登录再点赞~");
+            $("#common_alert_modal").modal('show');
           }
           else{
-            $(this).attr('disabled',"disabled");
-            $(this).val("已点赞");
-            $('#count-'+topicid).html("共"+data.count+"人点赞");
+            $("#topic-button-"+topicid).attr('disabled',"disabled");
+            
+            $("#topic-button-"+topicid).html("已点赞").addClass('btn-default').removeClass('btn-info');
+            $('#count-'+topicid).html("共"+data+"人点赞");
           }
         }
         });
@@ -33,7 +35,7 @@
             $("#common_alert_modal").modal('show');
           }
           else{
-            $("#common_alert_modal_html").html("添加建议成功！");
+            $("#common_alert_modal_html").html("发布成功，感谢您的宝贵建议！");
             $("#common_alert_modal").modal('show');
             window.location.reload();
           }
@@ -44,7 +46,7 @@
   })
 </script>
 
-<div id="suggestion" class="panel panel-info">
+<div id="suggestion" class="panel panel-default">
   
 
 <!-- Button trigger modal -->
@@ -83,12 +85,11 @@
   </div>
   <div id="topic-list" class="panel-body">
     <!-- item -->
-
     <% @topics_list.each do |item|%>
-    <div class="panel panel-info topic_item">
+    <div class="panel panel-default topic_item">
      <div class="panel-heading">
       <div class="row">
-         <div class="col-md-2 col-lg-2">建议人：<%= item.username %></div>
+         <div class="col-md-2 col-lg-2">发布人：<%= item.username %></div>
          <div class="col-md-7 col-lg-7">提出时间：<%= item.createtime.strftime("%Y-%m-%d") %></div>
        </div>
        </div>
@@ -96,7 +97,17 @@
        <div class="panel-body">
            <div class="row">
              <div class="col-md-1 col-lg-1 col-md-offset-9">
-               <button type="button" data-id="<%= item.id%>" class="btn btn-info btn-xs clickzan">我要点赞</button>
+               <% disable = 0;
+                 @clickzan_list.each do |item2|
+                 if item2.topicid == item.id
+                   disable = 1;
+                 end;
+                 end;
+                 if disable == 0 %>
+               <button type="button" data-id="<%= item.id%>" id="topic-button-<%= item.id%>" class="btn btn-info btn-sm clickzan">我要点赞</button>
+               <% else %>
+               <button type="button" data-id="<%= item.id%>" id="topic-button-<%= item.id%>" disabled="disabled" class="btn btn-default btn-sm clickzan">已点赞</button>
+               <% end%>
              </div>
              <div class="col-md-2 col-lg-2" id="count-<%= item.id%>">共<%= item.count%>人点赞</div>
            </div>

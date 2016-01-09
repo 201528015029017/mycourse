@@ -1,7 +1,6 @@
 
-
 <body>	
-<%= form_for :product,  url: 'upload', :html=>{:id=>"add_dish"} do |f|%>
+<%= form_for :product,  url: '/upload', :html=>{:id=>"add_dish"} do |f|%>
 	<div id = 'add_dish_err' class="alert alert-danger" role="alert"></div>
 	<div class="htmleaf-container">
 		<!--<div class="htmleaf-content bgcolor-8">
@@ -14,13 +13,13 @@
 		<hr />
 		<p>
 			<div class="row">
-    <div class="typediv col-lg-2"><input name="create_shaixuan[]" type="checkbox" value="rihanliaoli" /> <img  class="icon-size" src = "/images/rihanliaoli.png"/>日韩料理</div>
-    <div class="typediv col-lg-2"><input name="create_shaixuan[]" type="checkbox"  value="difangcai" /> <img class="icon-size" src = "/images/difangcai.png"/>地方菜</div>
-    <div  class="typediv col-lg-2"><input name="create_shaixuan[]" type="checkbox"  value="tesexiaochi"/> <img class="icon-size" src = "/images/tesexiaochi.png"/>特色小吃</div>
-    <div  class="typediv col-lg-2"><input name="create_shaixuan[]" type="checkbox"  value="yinliao" /> <img  class="icon-size" src = "/images/yinliao.png"/>饮料</div>
-    <div  class="typediv col-lg-2"><input name="create_shaixuan[]" type="checkbox"  value="xiaoye" /> <img  class="icon-size" src = "/images/xiaoye.png"/>宵夜</div>
-    <div  class="typediv col-lg-2"><input name="create_shaixuan[]" type="checkbox"  value="huoguo" /> <img  class="icon-size" src = "/images/huoguo.png"/>火锅</div>
-    <div  class="typediv col-lg-2"><input name="create_shaixuan[]" type="checkbox"   value="xishikuaican"/> <img class="icon-size" src = "/images/xishikuaican.png"/>西式快餐</div>
+    <div class="col-lg-2"><input name="create_shaixuan[]" type="checkbox" value="rihanliaoli" /> <img  class="icon-size" src = "/images/rihanliaoli.png"/>日韩料理</div>
+    <div class="col-lg-2"><input name="create_shaixuan[]" type="checkbox"  value="difangcai" /> <img class="icon-size" src = "/images/difangcai.png"/>地方菜</div>
+    <div  class="col-lg-2"><input name="create_shaixuan[]" type="checkbox"  value="tesexiaochi"/> <img class="icon-size" src = "/images/tesexiaochi.png"/>特色小吃</div>
+    <div  class="col-lg-2"><input name="create_shaixuan[]" type="checkbox"  value="yinliao" /> <img  class="icon-size" src = "/images/yinliao.png"/>饮料</div>
+    <div  class="col-lg-2"><input name="create_shaixuan[]" type="checkbox"  value="xiaoye" /> <img  class="icon-size" src = "/images/xiaoye.png"/>宵夜</div>
+    <div  class="col-lg-2"><input name="create_shaixuan[]" type="checkbox"  value="huoguo" /> <img  class="icon-size" src = "/images/huoguo.png"/>火锅</div>
+    <div  class="col-lg-2"><input name="create_shaixuan[]" type="checkbox"   value="xishikuaican"/> <img class="icon-size" src = "/images/xishikuaican.png"/>西式快餐</div>
  
   </div>
 	
@@ -57,12 +56,6 @@
 		</div>
 	</div>
 	</div>
-	<hr />
-	<div style="text-align:right">
-		<button type="button" class="btn btn-primary btn-lg" id="cacen_button" style="margin:10px">取消</button>
-		<button type="button" class="btn btn-primary btn-lg" id = "submit_button" style="margin:10px">上传</button>
-	</div>
 	
 <% end %>
 </body>
-</html>

@@ -67,7 +67,7 @@
  float:left;
 }
 .typediv{
-    padding:10px;
+    padding:6px;
     cursor:pointer;
 } 
 .icon-size{
@@ -77,6 +77,23 @@
 
 .dish-type{
     background:#fafafa;
-    padding:10px;
+    margin-bottom:6px;
     border-bottom: 1px solid #e4e4e4;
+}
+.navbar-background-color{
+    background-color: #F55252;
+}
+.navbar-default .navbar-brand {
+    color: #FFFFFF;
+}
+.navbar-default .navbar-nav > li > a{
+    color: #FFFFFF;
+}
+.navbar-default .navbar-text{
+    color: #FFFFFF;
+}
+.body-padding {
+
+    padding-left: 260px;
+    padding-right: 260px;
 }
