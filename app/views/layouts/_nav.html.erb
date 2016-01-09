@@ -95,6 +95,7 @@
         var search_text = $("#search_text").val();
         //alert(search_text);
          $.ajax({
+           //cla
            type:"GET",
            url:"/selectDishes",
            data: {dining: "0",search : search_text},
@@ -102,6 +103,7 @@
            }
          })
       });
+      
       
       $("#change_pwd").click(function() {
           $("#edit_pwd_modal").modal("show");
@@ -227,6 +229,7 @@
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 </nav>
+<div></div>
 
 <input id = "userid" value = <%= session[:user].nil? ? "" :session[:user]["id"] %> style="display:none" />
 
