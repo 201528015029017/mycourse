@@ -1,15 +1,22 @@
 class TopicsController < ApplicationController
     skip_before_filter :verify_authenticity_token, :only => [:create]
 def index
-    @topics_list = Topic.find_by_sql("select topics.*,username  from users,topics where users.id = topics.userid order by topics.count desc")
+    if params[:sortby].nil?
+        sortby = "count"
+    else
+        sortby = params[:sortby]
+    end
+    if sortby == "count"
+        @topics_list = Topic.find_by_sql("select topics.*,username  from users,topics where users.id = topics.userid order by topics.count desc")
+    else
+        @topics_list = Topic.find_by_sql("select topics.*,username  from users,topics where users.id = topics.userid order by topics.createtime desc")
+    end
     userid = sessionOrNot
     @clickzan_list = Clickzan.find_by_sql("select topicid from clickzans where userid = #{userid}")
-    puts "clickzan-list="
     puts @clickzan_list
 end
 
 def create
-    puts "create topic"
     userid = sessionOrNot
     if userid == 0 
         render :text=> 0
@@ -24,7 +31,7 @@ end
 def clickzan
     topicid = params[:topicid]
     userid = sessionOrNot
-    if userid == 1
+    if userid > 0
         @zan = Clickzan.create(:userid => userid,:topicid => topicid)
         @topic =Topic.find(topicid)
         @topic.count = @topic.count + 1

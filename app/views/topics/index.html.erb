@@ -28,8 +28,7 @@
         type : "post",
         url : "/topics",
         data: {topic_content : content},
-        success: function(data){
-            alert(data);
+        success: function(data){  
           if (data == 0){
             $("#common_alert_modal_html").html("亲，请先登录再提建议~");
             $("#common_alert_modal").modal('show');
@@ -74,7 +73,8 @@
   
   <div class="panel-heading">
     <div class="row">
-      <div class="col-md-9"><h3>大家可以在此提出宝贵的意见！</h3></div>
+      <div class="col-md-6"><h3>大家可以在此提出宝贵的意见！</h3></div>
+      
       <div class="col-md-3"><button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#suggestModal">
       我要提意见
       </button>
@@ -84,6 +84,17 @@
       
   </div>
   <div id="topic-list" class="panel-body">
+    <div class="dropdown">
+  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+    排序方式
+    <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+    <li><a href="/topics">点赞数</a></li>
+    <li><a href="/topics?sortby='time'">发布时间</a></li>
+
+  </ul>
+</div>
     <!-- item -->
     <% @topics_list.each do |item|%>
     <div class="panel panel-default topic_item">
