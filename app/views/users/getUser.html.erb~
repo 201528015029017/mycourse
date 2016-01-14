@@ -1,5 +1,5 @@
 <script>
-    function showUser(data){
+    function showDishes(data){
       var id,name,count,score,price,address,img_url,ave_score;
       var len = data.length;
       //alert(data.length);
