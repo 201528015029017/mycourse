@@ -28,5 +28,5 @@ class TestcController < ApplicationController
   end
 	def showclick
 	end
-
+   
 end
