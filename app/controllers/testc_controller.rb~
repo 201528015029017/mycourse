@@ -26,7 +26,6 @@ class TestcController < ApplicationController
   def can?(object, action, subject)
     abilities.allowed?(object, action, subject)
   end
-	def showclick
-	end
+
 
 end
