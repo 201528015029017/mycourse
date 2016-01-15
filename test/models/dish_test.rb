@@ -29,8 +29,8 @@ class DishTest < ActiveSupport::TestCase
   end
   
   test "dishname should not be too long" do
-    @user.username = "a" * 51
-    assert_not @user.valid?
+    @dish.dishname = "a" * 51
+    assert_not @dish.valid?
   end
   
 end

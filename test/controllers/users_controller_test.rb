@@ -6,16 +6,15 @@ class UsersControllerTest < ActionController::TestCase
     assert_response :success
   end
 
-
   test "logout" do
     get :logout
     assert_response :success
   end
   
-  
-  
   test "create user info" do
     get :create
     assert_response :success
   end
+  
+
 end
