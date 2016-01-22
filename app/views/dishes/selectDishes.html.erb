@@ -1,63 +1,9 @@
 
 <head>
-  <script>
-    var dishes;
-    function getDishes(num) {
-      //var data = [{'id':1,'dishname':'黄焖鸡米饭','count':4,'score':10,'price':12.5,'dining':2,'floor':1,'picurl':'/images/dishtest.jpg'},
-      //{'id':1,'dishname':'黄焖鸡米饭黄焖鸡米饭','count':4,'score':16,'price':12.5,'dining':2,'floor':1,'picurl':'/images/dishtest.jpg'}];
-      $.ajax({
-        type : "GET",
-        url : "/selectDishes",
-        data: {dining : num},
-        success: function(data){
-         // alert(data[0].id)
-         //alert(data.length)
-         
-         dishes = data;
-         dishes.sort(bijiao);
-         $('#index_dish-list').html('');
-         
-         showDishes(data);
-        }
-        });
-    }
-    function bijiao(a,b){
-      if(a.count == 0)
-       return 1;
-      if(b.count == 0)
-       return -1;
-      return a.score/a.count < b.score/b.count ? 1 : -1;
-       
-    }
-    
-    function showDishes(data){
-      var id,name,count,score,price,address,img_url,ave_score;
-      var len = data.length;
-      //alert(data.length);
-      for (var i = 0; i < len; i++){
-        var item = data[i];
-        id = item.id;
-        name = item.dishname;
-        count = item.count;
-        score = item.score;
-        if (count > 0)
-          ave_score = score/count;
-        else ave_score = 0;
-        price = item.price;
-        address = item.dining+ "食堂-" + item.floor + "楼";
-        img_url = "images/upload_dish_images/" + item.picurl;
-
-      ///////////
-        var s_img,s_name,s_star,s_address,s_content,s;
-        s_img = "<a href='javascript:void(0)'><img src='"+img_url+"' style='width:150px;height:150px'></a>";
-        s_name = "<h4>"+name+"</h4>"
-        s_star = "<input class='disabled_rating dishes-all-star' type='number' value="+ave_score+"></input>"+
-            "<p><small>共"+count+"人评价</small></p>";
-        s_address = "<div>"+address+"</div>";
-        s_content = "<div class='caption'>"+s_name+s_star+s_address+"</div>";
-        s="<div class='col-sm-6 col-md-2'><div class='thumbnail'>"+s_img+s_content+"</div></div>";
-        $('#index_dish-list').append(s);
-        $('.dishes-all-star').rating({  //整体评价
+<script>
+  
+  $(document).ready(function(){
+      $('.dishes-all-star').rating({  //整体评价
               min: 0,
               max: 5,
               step: 0.1,
@@ -66,15 +12,8 @@
               readonly: true,
               size : "xm"
       });
-      }
-    }
-    
-    
-    $(document).ready(function(){
-      
-    })
-
-  </script>
+  })
+</script>
 </head>
 
 
@@ -83,12 +22,26 @@
 <div>
 
   <!-- Nav tabs -->
-
+  <h3>搜索结果</h3><hr>
   <div class="dish-content">
     <div id = "index_dish-list" class="row">
       <!-- unit -->
+      <% @dishes.each do |item| %>
+      <div class="col-sm-6 col-md-2">
+        <div class="thumbnail">
+          <a href="/dishdetails/<%=item.id%>">
+            <img src="images/upload_dish_images/<%=item.picurl%>" style="width:150px;height:150px">
+          </a>
+          <div class="caption">
+            <h4><%=item.dishname%></h4>
+            <input class='disabled_rating dishes-all-star' type='number' value=<%= item.count==0?0 : ((item.score).to_f/(item.count).to_f).round(1)%>></input>
+            <p><small>共<%=item.count%>人评价</small></p>
+                <div><%= item.dining %>食堂-<%= item.floor %>层</div>
+          </div>
+        </div>
+      </div>
+      <% end %>
      </div>
-    
   </div>
 
 </div>

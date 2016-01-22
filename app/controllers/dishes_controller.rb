@@ -9,7 +9,6 @@ class DishesController < ApplicationController
   end
   def getDishes
     dining = params[:dining]
-    search = params[:search]
     #
     #puts search
     if dining == '0'
@@ -17,10 +16,7 @@ class DishesController < ApplicationController
     else
       dishes = Dish.where(:dining => dining)
     end
-    
-    if !search.nil?
-      dishes = Dish.find_by_sql("select * from dishes where dishname like '%" + search + "%'");
-    end
+
     #puts 1111
     #puts dishes[0].id
     render :json => dishes
@@ -28,8 +24,10 @@ class DishesController < ApplicationController
   end
   
   def selectDishes
-    dining = params[:dining]
-    search = params[:search]
+    search = params[:search_text]
+     if !search.nil?
+      @dishes = Dish.find_by_sql("select * from dishes where dishname like '%" + search + "%'");
+     end
   end
   #首页
   def index

@@ -91,18 +91,7 @@
        })
       });
       
-      $("#search_dishes").click(function() {
-        var search_text = $("#search_text").val();
-        //alert(search_text);
-         $.ajax({
-           //cla
-           type:"GET",
-           url:"/selectDishes",
-           data: {dining: "0",search : search_text},
-           success: function(data){
-           }
-         })
-      });
+
       
       
       $("#change_pwd").click(function() {
@@ -201,16 +190,16 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a id = "nav_index" class="navbar-brand navbar-word-color" href="#" ><img  src = "images/mylogo.png" ></img></a>
+      <a id = "nav_index" class="navbar-brand navbar-word-color" href="#" ><img id="logo_img" src = "images/mylogo.png" ></img></a>
     </div>
 
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-      <form class="navbar-form navbar-left" role="search">
+      <form action='/selectDishes' method='get' class="navbar-form navbar-left" role="search">
         <div class="form-group">
-          <input id = "search_text" type="text" class="form-control" placeholder="菜名">
+          <input name = "search_text" type="text" class="form-control" placeholder="菜名">
         </div>
-        <button id = "search_dishes" type="button" class="btn btn-default">搜索</button>
+        <button id = "search_dishes" type="submit" class="btn btn-default">搜索</button>
       </form>
       <ul class="nav navbar-nav navbar-right">
         <li><a href="/topics">我要提建议</a></li>
